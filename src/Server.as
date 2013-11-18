@@ -75,26 +75,29 @@ package
 		{
 			var clientSocket:Socket = event.target as Socket;		
 			try {
-				var messageType:String = clientSocket.readUTF();
-				
-				switch (messageType) {
-					case MESSAGE_SET_NAME:
-					{
-						setName(clientSocket, clientSocket.readUTF());
-						break;
-					}
-					case MESSAGE_SEND_TO:
-					{
-						var name:String = clientSocket.readUTF();
-						var msg:String = clientSocket.readUTF();
-						var params:Object = (clientSocket.bytesAvailable > 0) ? clientSocket.readObject() : null;
-						sendMessageTo(name, msg, params);
-						break;
-					}
-					case MESSAGE_GET_ALL_NAMES:
-					{
-						sendAllNamesTo(clientSocket);
-						break;
+				while (clientSocket.bytesAvailable > 0)
+				{
+					var messageType:String = clientSocket.readUTF();
+					
+					switch (messageType) {
+						case MESSAGE_SET_NAME:
+						{
+							setName(clientSocket, clientSocket.readUTF());
+							break;
+						}
+						case MESSAGE_SEND_TO:
+						{
+							var name:String = clientSocket.readUTF();
+							var msg:String = clientSocket.readUTF();
+							var params:Object = (clientSocket.bytesAvailable > 0) ? clientSocket.readObject() : null;
+							sendMessageTo(name, msg, params);
+							break;
+						}
+						case MESSAGE_GET_ALL_NAMES:
+						{
+							sendAllNamesTo(clientSocket);
+							break;
+						}
 					}
 				}
 			} catch (e:EOFError) {
